@@ -1,6 +1,5 @@
 pandas
 plotly.express
-json
 mezzala
 streamlit
 numpy
