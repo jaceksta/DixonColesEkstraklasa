@@ -224,7 +224,7 @@ st.caption('Data from football-data.co.uk')
 st.caption('Model from [mezzala Python package]("https://pypi.org/project/mezzala/") by Ben Torvaney')
 st.caption('Author: Jacek Staszak')
 st.caption('This is a very, very early version of the app. More features will be added soon.')
-st.write('Choose home and away team to see the probabilities of different outcomes.')
+st.write('Choose home and away team. The app will predict the result, expected goals, clean sheet probability, over/under 2.5, both teams to score and more.')
 
 teams = df['Home'].unique()
 
