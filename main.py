@@ -56,7 +56,12 @@ def over_25(prediction):
     probs = [total_probability, under_25]
     df = pd.DataFrame({'result': labels, 'probs': probs}).reset_index()
     fig = px.bar(df, x='result', y='probs', text='probs', labels={'result': 'Over / Under 2.5', 'probs': 'Probability'}, color='result')
-    fig.update_layout(showlegend=False)
+    fig.update_traces(texttemplate='%{text:.2s}%')
+    fig.update_layout(showlegend=False, font=dict(
+            family="sans-serif",
+            size=18,
+            color="#7f7f7f"
+        ))
     return fig
 
 def create_array(prediction):
@@ -117,7 +122,13 @@ def plot_probabilities(prediction, home_team, away_team):
     df = pd.DataFrame({'result': labels, 'probs': probs}).reset_index()
     
     fig = px.bar(df, x='result', y='probs', text='probs', labels={'result': 'Result', 'probs': 'Probability'}, color='result')
-    fig.update_layout(showlegend=False)
+    fig.update_traces(texttemplate='%{text:.2s}%')
+    
+    fig.update_layout(showlegend=False, font=dict(
+            family="sans-serif",
+            size=18,
+            color="#7f7f7f"
+        ))
     return fig
 
 def plot_expected_points(prediction, home_team, away_team):
@@ -132,7 +143,15 @@ def plot_expected_points(prediction, home_team, away_team):
     probs = [home_pts, away_pts]
     df = pd.DataFrame({'result': labels, 'probs': probs}).reset_index()
     
-    fig = px.bar(df, x='result', y='probs', text='probs', labels={'result': 'Team', 'probs': 'Expected Points'})
+    fig = px.bar(df, x='result', y='probs', text='probs', labels={'result': 'Team', 'probs': 'Expected Points'}, color = 'result',color_discrete_map={
+        home_team: '#2B66C2',
+        away_team: '#EB4339'
+    })
+    fig.update_layout(showlegend=False, font=dict(
+            family="sans-serif",
+            size=18,
+            color="#7f7f7f"
+        ))
     return fig
 
 def expected_goals(prediction, home_team, away_team):
@@ -145,7 +164,15 @@ def expected_goals(prediction, home_team, away_team):
     away = np.round(away, decimals=2)
     labels = [home_team, away_team]
     df = pd.DataFrame({'Team': labels, 'Expected Goals': [home, away]})
-    fig = px.bar(df, x='Team', y='Expected Goals', text='Expected Goals', labels={'Team': 'Team', 'Expected Goals': 'Expected Goals'})
+    fig = px.bar(df, x='Team', y='Expected Goals', text='Expected Goals', labels={'Team': 'Team', 'Expected Goals': 'Expected Goals'}, color = 'Team',color_discrete_map={
+        home_team: '#2B66C2',
+        away_team: '#EB4339'
+    })
+    fig.update_layout(showlegend=False, font=dict(
+            family="sans-serif",
+            size=18,
+            color="#7f7f7f"
+        ))
     return fig    
 
 def clean_sheet_probability(prediction, home_team, away_team):
@@ -160,7 +187,13 @@ def clean_sheet_probability(prediction, home_team, away_team):
     away = np.round(away*100, decimals=2)
     labels = [home_team, away_team]
     df = pd.DataFrame({'Team': labels, 'Clean Sheet Probability': [home, away]})
-    fig = px.bar(df, x='Team', y='Clean Sheet Probability', text='Clean Sheet Probability', labels={'Team': 'Team', 'Clean Sheet Probability': 'Clean Sheet Probability'})
+    fig = px.bar(df, x='Team', y='Clean Sheet Probability', text='Clean Sheet Probability', labels={'Team': 'Team', 'Clean Sheet Probability': 'Clean Sheet Probability'}, color = 'Team')
+    fig.update_traces(texttemplate='%{text:.2s}%')
+    fig.update_layout(showlegend=False, font=dict(
+            family="sans-serif",
+            size=18,
+            color="#7f7f7f"
+        ))
     return fig
 
 def both_teams_to_score(prediction):
@@ -174,7 +207,12 @@ def both_teams_to_score(prediction):
     probs = [btts, 100-btts]
     df = pd.DataFrame({'result': labels, 'probs': probs}).reset_index()
     fig = px.bar(df, x='result', y='probs', text='probs', labels={'result': 'Both Teams to Score', 'probs': 'Probability'}, color='result')
-    fig.update_layout(showlegend=False)
+    fig.update_traces(texttemplate='%{text:.2s}%')
+    fig.update_layout(showlegend=False, font=dict(
+            family="sans-serif",
+            size=18,
+            color="#7f7f7f"
+        ))
     return fig
 
 
@@ -182,11 +220,16 @@ def both_teams_to_score(prediction):
 df = get_esa_games()
 data = turn_into_dict(df)
 model = create_model(data)
-st.title('ESA Predictor')
+st.title('Ekstraklasa 2023/2024 Predictions')
+st.write('Choose home and away team to see the probabilities of different outcomes')
+st.caption('Data from football-data.co.uk')
+st.caption('Model from [mezzala Python package]("https://pypi.org/project/mezzala/") by Ben Torvaney')
+st.caption('Author: Jacek Staszak')
+
 teams = df['Home'].unique()
 
-home_team = st.selectbox('Home Team', teams, index = 1)
-away_team = st.selectbox('Away Team', teams)
+home_team = st.selectbox('Home Team', teams, index = 2)
+away_team = st.selectbox('Away Team', teams, index = 16)
 
 prediction = predict_game(model, home_team, away_team)
 st.header('Expected Goals')
@@ -194,16 +237,17 @@ st.plotly_chart(expected_goals(prediction, home_team, away_team))
 plot = create_heatmap(prediction,  home_team, away_team)
 st.header('Scoreline Probability')
 st.plotly_chart(plot)
+st.header('Result Probability')
+st.plotly_chart(plot_probabilities(prediction, home_team, away_team))
+st.header('Expected Points')
+st.plotly_chart(plot_expected_points(prediction, home_team, away_team))
 st.header('Clean Sheet Probability')
 st.plotly_chart(clean_sheet_probability(prediction, home_team, away_team))
 st.header('Over / Under 2.5')
 st.plotly_chart(over_25(prediction))
 st.header('Both Teams to Score')
 st.plotly_chart(both_teams_to_score(prediction))
-st.header('Result Probability')
-st.plotly_chart(plot_probabilities(prediction, home_team, away_team))
-st.header('Expected Points')
-st.plotly_chart(plot_expected_points(prediction, home_team, away_team))
+
 
 
 
