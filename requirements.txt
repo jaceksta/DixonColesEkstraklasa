@@ -1,6 +1,6 @@
 pandas
-plotly
+plotly.express
+json
+mezzala
 streamlit
-yfinance
-pandas-datareader
-prophet
+numpy
