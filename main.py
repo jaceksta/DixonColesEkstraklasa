@@ -4,9 +4,7 @@ import json
 import mezzala
 import streamlit as st
 import numpy as np
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-import matplotlib.patheffects as PathEffects
+
 
 
 
