@@ -219,10 +219,12 @@ df = get_esa_games()
 data = turn_into_dict(df)
 model = create_model(data)
 st.title('Ekstraklasa 2023/2024 Predictions')
-st.write('Choose home and away team to see the probabilities of different outcomes. This is a very, very early version of the app. More features will be added soon.')
+
 st.caption('Data from football-data.co.uk')
 st.caption('Model from [mezzala Python package]("https://pypi.org/project/mezzala/") by Ben Torvaney')
 st.caption('Author: Jacek Staszak')
+st.caption('This is a very, very early version of the app. More features will be added soon.')
+st.write('Choose home and away team to see the probabilities of different outcomes.')
 
 teams = df['Home'].unique()
 
